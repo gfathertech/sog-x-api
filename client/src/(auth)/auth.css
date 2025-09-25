@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+input {
+    background-color: rgb(216, 220, 224);
+}
+.card {
+    justify-items: center;
+    align-items: center;
+    padding: 20px;
+}
+h1 {
+   font-size: 30px;
+   font-weight: 700;
+   text-align: center;
+    --tw-text-opacity: 1;
+    color: rgb(79 70 229 / var(--tw-text-opacity, 1))
+
+}
+
+label {
+    display: flex;
+    font-size: 14px;
+    font-weight: 500;
+      --tw-text-opacity: 1;
+    color: rgb(55 65 81 / var(--tw-text-opacity, 1));
+     margin-bottom: 0.25rem;
+}
+
+motion.form {
+    background-color: red;
+}
+
+.input{
+    width: 100%;
+    padding: 0.5rem;
+    border-width: 1px;
+     border-radius: 0.5rem;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: rgb(209 213 219 / var(--tw-border-opacity, 1))
+}
+
+img{
+ justify-self: center;
+}
+
+
+@layer components{
+    .button{
+        @apply w-full flex items-center justify-center
+         bg-indigo-600 text-white py-2 rounded-lg font-semibold
+          hover:bg-indigo-700 transition
+    }
+}

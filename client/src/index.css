@@ -1,0 +1,193 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.lines th {
+  @apply p-4 font-semibold border-b border-r dark:border-gray-600;
+}
+
+
+
+@layer components{
+.page {
+    p{
+        @apply text-center text-gray-500 dark:text-gray-400 mb-8;
+    }
+
+    & .main{
+        @apply overflow-x-auto bg-white dark:bg-gray-800 shadow-2xl rounded-lg border border-gray-200 dark:border-gray-700;
+
+        & table{
+            @apply w-full text-left;
+        }
+
+         & thead{
+            @apply bg-gray-100 dark:bg-gray-700 ;
+        }
+
+         & tbody{
+            
+
+
+            & tr{
+                @apply hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200
+            }
+
+             & td{
+                @apply p-4 align-middle dark:border-gray-600 border-b
+            }
+
+          & .action-button{
+           @apply flex items-center justify-center gap-2 w-full bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-500;
+          }
+        }
+    }
+
+}
+    .searchbar {
+        @apply mb-7 justify-center items-center flex;
+
+      & .search {
+       @apply   text-red-400;
+}  
+    & input {
+           @apply flex items-center justify-center w-full pl-10 pr-4 py-2 border rounded-lg bg-gray-800;
+        } 
+    }
+}
+
+ .glass-card {
+    @apply glass rounded-xl shadow-glass;
+  }
+
+
+ /* Button styles */
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 shadow-md hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-200 text-secondary-800 hover:bg-secondary-300 focus:ring-secondary-400;
+  }
+
+  .btn-accent {
+    @apply btn bg-accent-600 text-white hover:bg-accent-700 focus:ring-accent-500 shadow-md hover:shadow-lg;
+  }
+
+  .btn-glass {
+    @apply btn glass-white hover:bg-white/90 text-secondary-800 shadow-soft hover:shadow-medium;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white focus:ring-primary-500;
+  }
+
+
+ /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  @media (max-width: 768px) {
+    .glass-card, .glass-card-white {
+      @apply rounded-lg;
+    }
+    
+    .btn {
+      @apply px-3 py-2 text-sm;
+    }
+    
+    .input {
+      @apply px-3 py-2;
+    }
+  }
+
+
+/* Utility classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .bg-grid {
+    background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+  }
+
+  .animate-bounce-subtle {
+    animation: bounceSubtle 0.6s ease-out;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Keyframe animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+  40%, 43% { transform: translate3d(0,-8px,0); }
+  70% { transform: translate3d(0,-4px,0); }
+  90% { transform: translate3d(0,-2px,0); }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .glass, .glass-white, .glass-dark {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+  }
+}
