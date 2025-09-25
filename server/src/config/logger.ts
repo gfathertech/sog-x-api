@@ -29,7 +29,7 @@ const logFormat = winston.format.printf(({ level, message, timestamp, ...metadat
   return msg;
 });
 
- let  logs = process.env.LOGS || '/tmp/logs';
+ let  logs = process.env.LOGS_DIR || '/tmp/logs';
 
  if(!fs.existsSync(logs)) {
   fs.mkdirSync(logs, {recursive: true});
