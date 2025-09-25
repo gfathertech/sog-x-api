@@ -17,7 +17,7 @@ import { db } from "./config/db";
 dotenv.config()
 const app: Express = express()
 
-const PORT: number = parseInt(process.env.PORT || '3000', 10)
+const PORT: number = parseInt(process.env.PORT || '7860', 10)
 db()
 // Middleware
 // app.use(passport.initialize());
