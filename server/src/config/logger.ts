@@ -2,69 +2,102 @@ import winston from "winston";
 import fs from "fs";
 import path from "path";
 
-// Define log format with colorization
+// ========= Custom log formatter =========
 const logFormat = winston.format.printf(({ level, message, timestamp, ...metadata }) => {
   let msg = `${timestamp} [${level}] ${message}`;
-  
+
   if (Object.keys(metadata).length > 0) {
-    // Handle circular structures in metadata
     let seen = new WeakSet();
     try {
-      const cleanedMetadata = JSON.parse(JSON.stringify(metadata, (key, value) => {
-        if (typeof value === 'object' && value !== null) {
-          if (seen.has(value)) {
-            // Circular reference found, discard key
-            return '[Circular]';
+      const cleanedMetadata = JSON.parse(
+        JSON.stringify(metadata, (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+              return "[Circular]";
+            }
+            seen.add(value);
           }
-          seen.add(value);
-        }
-        return value;
-      }));
+          return value;
+        })
+      );
       msg += ` | ${JSON.stringify(cleanedMetadata)}`;
     } catch (error) {
-      msg += ` | [Metadata Error: ${error instanceof Error ? error.message : 'Unknown'}]`;
+      msg += ` | [Metadata Error: ${
+        error instanceof Error ? error.message : "Unknown"
+      }]`;
     }
   }
-  
+
   return msg;
 });
 
- let  logs = process.env.LOGS_DIR || '/tmp/logs';
+// ========= Log directory handling =========
+let logs = process.env.LOGS_DIR || "/tmp/logs";
 
- if(!fs.existsSync(logs)) {
-  fs.mkdirSync(logs, {recursive: true});
- }
-// Create logger instance
+try {
+  if (!fs.existsSync(logs)) {
+    fs.mkdirSync(logs, { recursive: true });
+    console.info(`✅ Created logs directory at: ${logs}`);
+  } else {
+    console.info(`📂 Logs directory already exists: ${logs}`);
+  }
+} catch (err) {
+  console.warn(
+    `⚠️ Could not create logs directory at ${logs}, falling back to console only.`,
+    err
+  );
+  logs = null; // disable file logging
+}
+
+// ========= Winston logger =========
 export const logger = winston.createLogger({
   level: process.env.NODE_ENV === "production" ? "info" : "debug",
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     winston.format.colorize(),
     logFormat
   ),
   transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(logs, "error.log"),
-      level: "error",
-      handleExceptions: true
+    // Always log to console
+    new winston.transports.Console({
+      handleExceptions: true,
+      handleRejections: true,
     }),
-    new winston.transports.File({
-      filename: path.join(logs, "combined.log"),
-      handleRejections: true
-    })
+
+    // Log to files if writable
+    ...(logs
+      ? [
+          new winston.transports.File({
+            filename: path.join(logs, "error.log"),
+            level: "error",
+            handleExceptions: true,
+          }),
+          new winston.transports.File({
+            filename: path.join(logs, "combined.log"),
+            handleRejections: true,
+          }),
+        ]
+      : []),
   ],
-  exitOnError: false
+  exitOnError: false,
 });
 
-// Create separate Morgan stream
+// ========= Morgan stream =========
 export const morganStream = {
   write: (message: string) => {
-    logger.info(message.trim());
-  }
+    logger.http(message.trim()); // use http level for request logs
+  },
 };
 
-// Add error handling
-logger.on('error', (error) => {
-  console.error('Logger error:', error);
+// ========= Safety hooks =========
+logger.on("error", (error) => {
+  console.error("❌ Winston logger internal error:", error);
+});
+
+process.on("unhandledRejection", (reason) => {
+  logger.error("💥 Unhandled Rejection", { reason });
+});
+
+process.on("uncaughtException", (error) => {
+  logger.error("🔥 Uncaught Exception", { error });
 });
