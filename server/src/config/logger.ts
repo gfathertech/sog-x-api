@@ -1,4 +1,6 @@
 import winston from "winston";
+import fs from "fs";
+import path from "path";
 
 // Define log format with colorization
 const logFormat = winston.format.printf(({ level, message, timestamp, ...metadata }) => {
@@ -28,6 +30,10 @@ const logFormat = winston.format.printf(({ level, message, timestamp, ...metadat
 });
 
  let  logs = process.env.LOGS || '/tmp/logs';
+
+ if(!fs.existsSync(logs)) {
+  fs.mkdirSync(logs, {recursive: true});
+ }
 // Create logger instance
 export const logger = winston.createLogger({
   level: process.env.NODE_ENV === "production" ? "info" : "debug",
@@ -39,12 +45,12 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: `${logs}/error.log`,
+      filename: path.join(logs, "error.log"),
       level: "error",
       handleExceptions: true
     }),
     new winston.transports.File({
-      filename: `${logs}/combined.log`,
+      filename: path.join(logs, "combined.log"),
       handleRejections: true
     })
   ],
