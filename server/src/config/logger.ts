@@ -27,6 +27,7 @@ const logFormat = winston.format.printf(({ level, message, timestamp, ...metadat
   return msg;
 });
 
+ let  logs = process.env.LOGS || '/tmp/logs';
 // Create logger instance
 export const logger = winston.createLogger({
   level: process.env.NODE_ENV === "production" ? "info" : "debug",
@@ -38,12 +39,12 @@ export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new winston.transports.File({
-      filename: "logs/error.log",
+      filename: `${logs}/error.log`,
       level: "error",
       handleExceptions: true
     }),
     new winston.transports.File({
-      filename: "logs/combined.log",
+      filename: `${logs}/combined.log`,
       handleRejections: true
     })
   ],
